@@ -11,4 +11,5 @@
   border: 4px solid #fff;
   border-radius: 16px;
   overflow: hidden;
+  cursor: pointer;
 }
