@@ -10,10 +10,10 @@ export default function App() {
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox />
-        <Pagination />
+        {/* <Pagination /> */}
         <button className={css.button}>Create post</button>
       </header>
-      <Modal>{/* Передати через children компонент CreatePostForm або EditPostForm */}</Modal>
+      {/* <Modal>{<CreatePostForm/> <EditPostForm />}</Modal> */}
       <PostList />
     </div>
   );

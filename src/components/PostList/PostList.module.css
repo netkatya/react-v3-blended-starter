@@ -68,3 +68,10 @@
 .edit:hover {
   background-color: #2d6a4f;
 }
+
+.empty {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 20px;
+}
