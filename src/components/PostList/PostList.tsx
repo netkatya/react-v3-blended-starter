@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Post } from "../../types/post";
 import css from "./PostList.module.css";
 import { deletePost } from "../../services/postService";
-import { BounceLoader } from "react-spinners";
+import Loader from "../Loader/Loader";
 
 
 interface PostListProps{
@@ -26,7 +26,7 @@ export default function PostList({ posts=[], onEdit }: PostListProps) {
 
   return (
     <>
-    {mutation.isPending && (<BounceLoader />)}
+    {mutation.isPending && (<Loader />)}
     <ul className={css.list}>
         {posts.map((post) => (
           <li className={css.listItem} key={post.id}>

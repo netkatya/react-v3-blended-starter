@@ -34,7 +34,7 @@ export const createPost = async (newPost: { title: string; body: string; userId:
 };
 
 export const editPost = async (id:number, newDataPost: { title: string; body: string }): Promise<Post> => {
-    const response = await await axios.patch<Post>(`${BASE_URL}/${id}`, newDataPost);
+    const response = await axios.patch<Post>(`${BASE_URL}/${id}`, newDataPost);
     return response.data;
 
 };
