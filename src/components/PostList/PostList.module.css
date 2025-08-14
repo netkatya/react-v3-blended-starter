@@ -16,19 +16,28 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: background-color 250ms ease-in-out;
+  transition: color 300ms ease-in-out;
 }
+
+:global(body.dark-theme) .listItem {
+  background-color: #42b887;
+  color: #f0fdf4;
+}
+
+
 
 .title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #2d6a4f;
+  /* color: #2d6a4f; */
 }
 
 .content {
   flex-grow: 1;
   font-size: 1rem;
-  color: #344e41;
+  /* color: #344e41; */
   margin-bottom: 1rem;
   white-space: pre-wrap;
 }
@@ -74,4 +83,12 @@
     color: #888;
     font-style: italic;
     margin-top: 20px;
+}
+
+.post-list {
+  transition: opacity 0.3s ease;
+}
+
+.post-list.loading {
+  opacity: 0.5;
 }

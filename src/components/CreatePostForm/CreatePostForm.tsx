@@ -4,6 +4,8 @@ import css from "./CreatePostForm.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "../../services/postService";
 import { Post } from "../../types/post";
+import toast from "react-hot-toast";
+
 
 interface FormValues {
   title: string;
@@ -18,7 +20,7 @@ const initialFormValues: FormValues = {
 const PostFormSchema = Yup.object().shape({
   title: Yup.string()
     .min(3, "Title must be at least 3 characters")
-    .max(50, "Title is too long")
+    .max(100, "Title is too long")
     .required("Title is required"),
   body: Yup.string()
     .max(500, "Content is too long")
@@ -27,20 +29,26 @@ const PostFormSchema = Yup.object().shape({
 
 interface PostFormProps {
   onCancel: () => void;
+  searchQuery: string;
+  page: number;
 } 
 
-export default function PostForm({ onCancel }: PostFormProps) {
+export default function PostForm({ onCancel, searchQuery, page }: PostFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<Post, Error, FormValues>({
     mutationFn:(values) => createPost({...values, userId:1}),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ["posts", searchQuery, page] });
+      toast.success("Post created successfully!");
       onCancel();
+    },
+      onError: () => {
+      toast.error("Failed to create post. Please try again.")
     }
   })
-
+ 
   const handleSubmit = (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => {
     mutation.mutate(values, {
       onSuccess: () => {
@@ -69,7 +77,7 @@ export default function PostForm({ onCancel }: PostFormProps) {
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={mutation.isPending}>
-            Create post
+            {mutation.isPending ? "Creating..." : "Create post"}
           </button>
         </div>
       </Form>

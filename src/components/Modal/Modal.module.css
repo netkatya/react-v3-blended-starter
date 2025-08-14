@@ -12,6 +12,11 @@
   backdrop-filter: blur(2px);
 }
 
+:global(body.dark-theme) .modal {
+  background-color: #1b4332;
+  color: #f0fdf4;
+}
+
 .modal {
   background-color: #ffffff;
   border-radius: 20px;
@@ -19,7 +24,7 @@
   box-shadow: 0 4px 16px rgba(0, 64, 0, 0.2);
   max-width: 600px;
   width: 100%;
-  animation: fadeInScale 0.25s ease-out;
+  animation: fadeInScale 0.5s ease-out;
 }
 
 @keyframes fadeInScale {

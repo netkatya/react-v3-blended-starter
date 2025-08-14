@@ -6,7 +6,14 @@
   box-sizing: border-box;
   max-width: 1400px;
   margin: 0 auto;
+  transition: background-color 300ms ease-in-out;
 }
+
+:global(body.dark-theme) .app {
+  background-color: #1b4332;
+  color: #f0fdf4;
+}
+
 
 .toolbar {
   display: flex;
@@ -41,3 +48,5 @@
   background-color: #1b4332;
   transform: translateY(0);
 }
+
+

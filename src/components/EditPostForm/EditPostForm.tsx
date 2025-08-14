@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import css from "./EditPostForm.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { editPost } from "../../services/postService";
+import { editPost, FetchPostsResponse } from "../../services/postService";
 import { Post } from "../../types/post";
 import toast from "react-hot-toast";
 
@@ -16,7 +16,7 @@ export interface FormValues {
 const PostFormSchema = Yup.object().shape({
   title: Yup.string()
     .min(3, "Title must be at least 3 characters")
-    .max(50, "Title is too long")
+    .max(100, "Title is too long")
     .required("Title is required"),
   body: Yup.string()
     .max(500, "Content is too long")
@@ -26,15 +26,25 @@ const PostFormSchema = Yup.object().shape({
 interface EditPostFormProps {
   initialValues: FormValues;
   onCancel: () => void;
+  searchQuery: string;
+  page: number;
 }
 
-export default function EditPostForm({ initialValues, onCancel }: EditPostFormProps) {
+export default function EditPostForm({ initialValues, onCancel, searchQuery, page }: EditPostFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<Post, Error,FormValues>({
     mutationFn: (values) => editPost(values.id, { title: values.title, body: values.body }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    onSuccess: (updatedPost) => {
+      // according to TZ, in case of invalidation we can't see any changes. With setQueryData we can see changes untill page will be reloading, 
+      // so I desided to leave this here :) 
+      queryClient.setQueryData<FetchPostsResponse>(["posts", searchQuery, page],
+        (oldData)=> {
+        if (!oldData) return oldData;
+        return {
+          ...oldData, posts: oldData.posts.map(p => p.id === updatedPost.id ? updatedPost : p),
+        }
+      });
       toast.success("Post edited successfully!");
       onCancel();
     },
@@ -48,7 +58,9 @@ export default function EditPostForm({ initialValues, onCancel }: EditPostFormPr
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => mutation.mutate(values)}
-      validationSchema={PostFormSchema}>
+      validationSchema={PostFormSchema}
+      enableReinitialize
+    >
       <Form className={css.form}>
         <div className={css.formGroup}>
           <label htmlFor="title">Title</label>
