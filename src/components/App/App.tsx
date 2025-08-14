@@ -2,7 +2,6 @@ import Modal from "../Modal/Modal";
 import PostList from "../PostList/PostList";
 import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
-
 import css from "./App.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPosts, FetchPostsResponse } from "../../services/postService";
@@ -14,6 +13,7 @@ import PostForm from "../CreatePostForm/CreatePostForm";
 import Loader from "../Loader/Loader";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
+// import {enable, disable} from 'darkreader';
 
 
 export default function App() {
@@ -43,9 +43,26 @@ export default function App() {
   }, [isDark]);
 
 
+//interesting, but how to customize separate items?
+  
+// useEffect(() => {
+//   if (isDark) {
+//     enable({
+
+//     });
+//   } else {
+//     disable();
+//   }
+
+//   return () => {
+//     disable();
+//   };
+// }, [isDark]);
+
   const { data, isFetching } = useQuery<FetchPostsResponse>({
     queryKey: ["posts", debouncedSearchQuery, page],
     queryFn: () => fetchPosts(debouncedSearchQuery, page),
+    // for some reasons keepPreviousData returns error, is it issue of react version? 
     placeholderData: (prev) => prev,
     staleTime: 1000 * 60,
   })

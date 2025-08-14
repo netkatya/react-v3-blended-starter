@@ -13,6 +13,7 @@
     "@tanstack/react-query": "^5.73.3",
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
+    "darkreader": "^4.9.109",
     "formik": "^2.4.6",
     "framer-motion": "^12.23.12",
     "modern-normalize": "^3.0.1",
