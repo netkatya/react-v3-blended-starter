@@ -12,16 +12,13 @@ export interface FormValues {
   body: string;
 }
 
-
 const PostFormSchema = Yup.object().shape({
   title: Yup.string()
     .min(3, "Title must be at least 3 characters")
     .max(100, "Title is too long")
     .required("Title is required"),
-  body: Yup.string()
-    .max(500, "Content is too long")
-    .required("Content is required"),
-})
+  body: Yup.string().max(500, "Content is too long").required("Content is required"),
+});
 
 interface EditPostFormProps {
   initialValues: FormValues;
@@ -30,29 +27,31 @@ interface EditPostFormProps {
   page: number;
 }
 
-export default function EditPostForm({ initialValues, onCancel, searchQuery, page }: EditPostFormProps) {
+export default function EditPostForm({
+  initialValues,
+  onCancel,
+  searchQuery,
+  page,
+}: EditPostFormProps) {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<Post, Error,FormValues>({
+  const mutation = useMutation<Post, Error, FormValues>({
     mutationFn: (values) => editPost(values.id, { title: values.title, body: values.body }),
     onSuccess: (updatedPost) => {
-      // according to TZ, in case of invalidation we can't see any changes. With setQueryData we can see changes untill page will be reloading, 
-      // so I desided to leave this here :) 
-      queryClient.setQueryData<FetchPostsResponse>(["posts", searchQuery, page],
-        (oldData)=> {
+      queryClient.setQueryData<FetchPostsResponse>(["posts", searchQuery, page], (oldData) => {
         if (!oldData) return oldData;
         return {
-          ...oldData, posts: oldData.posts.map(p => p.id === updatedPost.id ? updatedPost : p),
-        }
+          ...oldData,
+          posts: oldData.posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)),
+        };
       });
       toast.success("Post edited successfully!");
       onCancel();
     },
     onError: () => {
-      toast.error("Failed to edit post. Please try again.")
-    }
+      toast.error("Failed to edit post. Please try again.");
+    },
   });
-
 
   return (
     <Formik
@@ -75,7 +74,12 @@ export default function EditPostForm({ initialValues, onCancel, searchQuery, pag
         </div>
 
         <div className={css.actions}>
-          <button type="button" className={css.cancelButton} onClick={onCancel} disabled={mutation.isPending}>
+          <button
+            type="button"
+            className={css.cancelButton}
+            onClick={onCancel}
+            disabled={mutation.isPending}
+          >
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={mutation.isPending}>
