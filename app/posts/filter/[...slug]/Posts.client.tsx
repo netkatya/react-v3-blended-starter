@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useDebouncedCallback } from 'use-debounce';
 import PostList from '@/components/PostList/PostList';
 import SearchBox from '@/components/SearchBox/SearchBox';
@@ -15,11 +15,10 @@ import EditPostForm from '@/components/EditPostForm/EditPostForm';
 import CreatePostForm from '@/components/CreatePostForm/CreatePostForm';
 
 interface PostsClientProps {
-  initialData: { posts: Post[]; totalCount: number };
   userId: string;
 }
 
-export default function PostsClient({ initialData, userId }: PostsClientProps) {
+export default function PostsClient({ userId }: PostsClientProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,10 +30,9 @@ export default function PostsClient({ initialData, userId }: PostsClientProps) {
       fetchPosts({
         searchText: searchQuery,
         page: currentPage,
-        ...(userId !== 'All' && { userId }),
+        userId: userId === 'All' ? undefined : userId,
       }),
-    placeholderData: keepPreviousData,
-    initialData,
+    placeholderData: (prev) => prev,
   });
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
@@ -49,7 +47,7 @@ export default function PostsClient({ initialData, userId }: PostsClientProps) {
     setSearchQuery(newQuery);
   }, 300);
 
-  const totalPages = Math.ceil(data.totalCount / 8);
+  const totalPages = Math.ceil((data?.totalCount ?? 0) / 8);
   const posts = data?.posts ?? [];
 
   return (

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Post } from '@/types/post';
 import { User } from '@/types/user';
 
@@ -38,23 +38,32 @@ interface EditedPost {
   body: string;
 }
 
-export const createPost = async (newPost: NewPostContent) => {
+export const createPost = async (newPost: NewPostContent): Promise<Post> => {
   const response = await axios.post<Post>('/posts', newPost);
   return response.data;
 };
 
-export const editPost = async (newDataPost: EditedPost) => {
+export const editPost = async (newDataPost: EditedPost): Promise<Post> => {
   const response = await axios.patch<Post>(`/posts/${newDataPost.id}`, newDataPost);
   return response.data;
 };
 
-export const deletePost = async (postId: number) => {
+export const deletePost = async (postId: number): Promise<Post> => {
   const response = await axios.delete<Post>(`/posts/${postId}`);
   return response.data;
 };
 
-export const fetchPostById = async () => {};
+export const fetchPostById = async (postId: number): Promise<Post> => {
+  const response: AxiosResponse<Post> = await axios.get(`/posts/${postId}`);
+  return response.data;
+};
 
-export const fetchUsers = async () => {};
+export const fetchUsers = async (): Promise<User[]> => {
+  const response: AxiosResponse<User[]> = await axios.get(`/users`);
+  return response.data;
+};
 
-export const fetchUserById = async () => {};
+export const fetchUserById = async (userId: number): Promise<User> => {
+  const response: AxiosResponse<User> = await axios.get(`/users/${userId}`);
+  return response.data;
+};
