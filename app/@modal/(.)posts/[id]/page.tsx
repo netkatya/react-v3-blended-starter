@@ -4,22 +4,22 @@ import PostPreviewClient from './PostPreview.client';
 import { fetchPostById } from '@/lib/api';
 
 type PostDetailsProps = {
-  params: Promise<{ postId: number }>;
+  params: Promise<{ id: number }>;
 };
 
 export default async function PostPreview({ params }: PostDetailsProps) {
-  const { postId } = await params;
+  const { id } = await params;
 
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['post', postId],
-    queryFn: () => fetchPostById(postId),
+    queryKey: ['post', id],
+    queryFn: () => fetchPostById(id),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <PostPreviewClient postId={postId} />
+      <PostPreviewClient id={id} />
     </HydrationBoundary>
   );
 }

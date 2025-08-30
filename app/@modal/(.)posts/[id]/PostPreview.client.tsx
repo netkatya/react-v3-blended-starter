@@ -8,17 +8,18 @@ import { useRouter } from 'next/navigation';
 import css from './PostPreview.module.css';
 import { User } from '@/types/user';
 import { Post } from '@/types/post';
+import Loading from '@/app/loading';
 
 type PostPreviewClientProps = {
-  postId: number;
+  id: number;
 };
 
-export default function PostPreviewClient({ postId }: PostPreviewClientProps) {
+export default function PostPreviewClient({ id }: PostPreviewClientProps) {
   const router = useRouter();
 
   const { data: post, isLoading: postLoading } = useQuery<Post>({
-    queryKey: ['post', postId],
-    queryFn: () => fetchPostById(postId),
+    queryKey: ['post', id],
+    queryFn: () => fetchPostById(id),
   });
 
   const userId = post?.userId;
@@ -35,7 +36,7 @@ export default function PostPreviewClient({ postId }: PostPreviewClientProps) {
 
   const handleClose = () => router.back();
 
-  if (postLoading) return <p>Loading post...</p>;
+  if (postLoading) return <Loading />;
   if (!post) return <p>Failed to load post</p>;
 
   return (

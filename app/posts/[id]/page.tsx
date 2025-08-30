@@ -6,6 +6,16 @@ type PostDetailsProps = {
   params: Promise<{ id: number }>;
 };
 
+export async function generateMetadata({ params }: PostDetailsProps) {
+  const { id } = await params;
+  const post = await fetchPostById(id);
+
+  return {
+    title: post.title,
+    description: post.body.slice(0, 30),
+  };
+}
+
 export default async function PostDetails({ params }: PostDetailsProps) {
   const { id } = await params;
 
@@ -23,14 +33,4 @@ export default async function PostDetails({ params }: PostDetailsProps) {
       <PostDetailsClient id={id} />
     </HydrationBoundary>
   );
-}
-
-export async function generateMetadata({ params }: PostDetailsProps) {
-  const { id } = await params;
-  const post = await fetchPostById(id);
-
-  return {
-    title: post.title,
-    description: post.body.slice(0, 30),
-  };
 }
